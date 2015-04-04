@@ -111,7 +111,7 @@
           });
         };
       })(this);
-      return setTimeout(onReady, 500);
+      return setTimeout(onReady, 5000);
     };
 
     DataSource.prototype.addMessageListener = function(cb) {
@@ -143,11 +143,18 @@
       document.querySelector('form').addEventListener('submit', this.onSubmitForm);
       that = this;
       this.dataSource.addMessageListener(function(doc) {
-        var list;
+        var li, list;
         console.log('a message was added:', doc.message);
         that.msgs.push(doc);
         list = $('.message-list');
-        return list.append("<li data-index=" + doc.id + "><h2><a href='#'>" + doc.timestamp + "</a></h2><p>" + doc.message + "</p>");
+        list.append("<li data-index=" + doc.id + "><h2><a href='#'>" + doc.timestamp + "</a></h2><p>" + doc.message + "</p>");
+        li = list.find('[data-index=' + doc.id + ']');
+        li.on('click', function(e) {
+          var msgId;
+          e.preventDefault();
+          msgId = $(this).data('index');
+          window.location.hash = 'message/' + msgId;
+        });
       });
     }
 
@@ -157,6 +164,10 @@
     };
 
     App.prototype.onSubmitForm = function(event) {
+      var msg;
+      event.preventDefault();
+      msg = document.frmNewMessage[0].value;
+      this.dataSource.postMessage(msg);
       return console.log('submit', event);
     };
 

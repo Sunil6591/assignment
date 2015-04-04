@@ -88,7 +88,7 @@ class DataSource
       @_messageDocs[key] = messageDoc
       cb?()
       @_messageListeners.forEach (listener) -> listener messageDoc
-    setTimeout onReady, 500
+    setTimeout onReady, 5000
 
   # The callback argument is called whenever a message is added. Use like:
   #
@@ -118,12 +118,22 @@ class App
       that.msgs.push doc
       list = $('.message-list')
       list.append "<li data-index="+doc.id+"><h2><a href='#'>"+doc.timestamp+"</a></h2><p>"+doc.message+"</p>"
+      li = list.find '[data-index='+doc.id+']'
+      li.on 'click', (e) ->
+        e.preventDefault()
+        msgId = $(this).data('index')
+        window.location.hash = 'message/' + msgId
+        return
+      return
 
   onHashChange: (event) =>
     console.log 'hashchange', event
     @router(window.location.hash)
 
   onSubmitForm: (event) =>
+    event.preventDefault()
+    msg = document.frmNewMessage[0].value
+    @dataSource.postMessage msg
     console.log 'submit', event
 
   renderSingleMessage: (msgid) ->
