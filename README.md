@@ -1,7 +1,7 @@
 Make a single page app, without dependencies, that does the following:
 - show a list of messages - Done
-- allow the user to add a message to the list
-- add messages that are added by others to the list
+- allow the user to add a message to the list - Done
+- add messages that are added by others to the list - ??
 - when a message is clicked, the message is shown in an in-page popup (the list stays visible in the back) - Done. Css later
 - every message will have his own url (hash) - Done
 
