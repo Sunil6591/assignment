@@ -1,0 +1,49 @@
+<script src="index.js" type="text/javascript" charset="utf-8"></script>
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .list > *:first-child {
+    border: 1px solid silver;
+    flex-grow: 1;
+  }
+  .list input {
+    width: 100%;
+  }
+
+  .detail {
+    border: 1px solid silver;
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    left: 25%;
+    top: 25%;
+  }
+</style>
+
+<div class="list">
+  <div class="messages">
+    <ul class="message-list">
+      <script id="message-template" type="x-handlebars-template">​
+      {{#each this}}
+      <li data-index="{{id}}">
+        <h2><a href="#"> {{timestamp}} </a></h2>
+        <p> {{message}} </p>
+      </li>
+      {{/each}}
+      </script> 
+    </ul>
+  </div>
+  <form>
+    <input name="message"></input>
+  </form>
+</div>
+
+<div class="detail">
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
