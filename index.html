@@ -15,6 +15,7 @@
 
   .detail {
     border: 1px solid silver;
+    color: red;
     position: absolute;
     width: 50%;
     height: 50%;
@@ -26,7 +27,7 @@
 <div class="list">
   <div class="messages">
     <ul class="message-list">
-      <script id="message-template" type="x-handlebars-template">​
+      <script id="message-list-template" type="x-handlebars-template">​
       {{#each this}}
       <li data-index="{{id}}">
         <h2><a href="#"> {{timestamp}} </a></h2>
@@ -42,6 +43,7 @@
 </div>
 
 <div class="detail">
+  <h1></h1>
 </div>
 
 

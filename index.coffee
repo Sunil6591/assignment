@@ -109,6 +109,7 @@ class App
 
   constructor: ->
     @dataSource = new DataSource
+    @msgs = []
     window.addEventListener 'hashchange', @onHashChange
     document.querySelector('form').addEventListener 'submit', @onSubmitForm
 
@@ -119,17 +120,29 @@ class App
   onSubmitForm: (event) =>
     console.log 'submit', event
 
+  renderSingleMessage: (msgid) ->
+    detail = $('.detail')
+    if @msgs.length
+      @msgs.forEach (msg) ->
+        if msg.id == msgid
+          detail.find('h1').text msg.message
+        return
+    return
+
   renderMessages: () ->
+    that = this
     list = $('.message-list')
-    theTemplateScript = $('#message-template').html()
+    theTemplateScript = $('#message-list-template').html()
     #Compile the template​
     theTemplate = Handlebars.compile(theTemplateScript)
 
-    console.log list
     @dataSource.getMessages (msgs) ->
+      that.msgs = msgs
       list.append theTemplate(msgs)
-      msgs.forEach (msg) ->
-        console.log msg
+      list.find('li').on 'click', (e) ->
+        e.preventDefault()
+        msgId = $(this).data('index')
+        window.location.hash = 'message/' + msgId
         return
       return
     return
@@ -137,8 +150,14 @@ class App
   router: (url) ->
     temp = url.split('/')[0]
     that = this
-    map = '': ->
-      that.renderMessages()
+    map =
+      '': ->
+        that.renderMessages()
+      '#message': ->
+        id = url.split('#message/')[1].trim()
+        that.renderSingleMessage id
+        return
+
 
     if map[temp]
       map[temp]()
