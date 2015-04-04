@@ -136,10 +136,19 @@
     function App() {
       this.onSubmitForm = bind(this.onSubmitForm, this);
       this.onHashChange = bind(this.onHashChange, this);
+      var that;
       this.dataSource = new DataSource;
       this.msgs = [];
       window.addEventListener('hashchange', this.onHashChange);
       document.querySelector('form').addEventListener('submit', this.onSubmitForm);
+      that = this;
+      this.dataSource.addMessageListener(function(doc) {
+        var list;
+        console.log('a message was added:', doc.message);
+        that.msgs.push(doc);
+        list = $('.message-list');
+        return list.append("<li data-index=" + doc.id + "><h2><a href='#'>" + doc.timestamp + "</a></h2><p>" + doc.message + "</p>");
+      });
     }
 
     App.prototype.onHashChange = function(event) {

@@ -112,6 +112,12 @@ class App
     @msgs = []
     window.addEventListener 'hashchange', @onHashChange
     document.querySelector('form').addEventListener 'submit', @onSubmitForm
+    that=this
+    @dataSource.addMessageListener (doc) ->
+      console.log 'a message was added:', doc.message
+      that.msgs.push doc
+      list = $('.message-list')
+      list.append "<li data-index="+doc.id+"><h2><a href='#'>"+doc.timestamp+"</a></h2><p>"+doc.message+"</p>"
 
   onHashChange: (event) =>
     console.log 'hashchange', event
