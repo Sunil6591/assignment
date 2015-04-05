@@ -143,17 +143,22 @@
       document.querySelector('form').addEventListener('submit', this.onSubmitForm);
       that = this;
       this.dataSource.addMessageListener(function(doc) {
-        var li, list;
+        var firstNode, listNode, msgsNodes, newEl, newMsgEl;
         console.log('a message was added:', doc.message);
         that.msgs.push(doc);
-        list = $('.message-list');
-        list.prepend("<message-card data-index=" + doc.id + " timestamp=" + doc.timestamp + "><h1>" + doc.message + "</h1></message-card>");
-        li = list.find('[data-index=' + doc.id + ']');
-        li.on('click', function(e) {
+        listNode = document.querySelector('.message-list');
+        msgsNodes = document.querySelectorAll('.message-list message-card');
+        firstNode = msgsNodes[0];
+        newMsgEl = document.createElement('message-card');
+        newMsgEl.setAttribute("data-index", doc.id);
+        newMsgEl.setAttribute("timestamp", doc.timestamp);
+        newMsgEl.innerHTML = "<h1>" + doc.message + "</h1>";
+        newEl = listNode.insertBefore(newMsgEl, firstNode);
+        newEl.addEventListener('click', function(e) {
           var msgId;
           e.preventDefault();
-          msgId = $(this).data('index');
-          window.location.hash = 'message/' + msgId;
+          msgId = this.getAttribute('data-index');
+          return window.location.hash = 'message/' + msgId;
         });
       });
     }
@@ -173,17 +178,15 @@
 
     App.prototype.renderSingleMessage = function(msgid) {
       var detail, popup;
-      detail = $('.detail');
-      popup = detail.children('core-overlay');
+      detail = document.querySelector('.detail');
+      popup = detail.querySelector('core-overlay');
       if (this.msgs.length) {
         this.msgs.forEach(function(msg) {
           if (msg.id === msgid) {
-            popup.children('h2').text(msg.message);
-            popup.css({
-              'background-color': 'white',
-              'padding': '20px'
-            });
-            popup[0].open();
+            popup.querySelector('h2').innerText = msg.message;
+            popup.style.backgroundColor = 'white';
+            popup.style.padding = '20px';
+            popup.open();
           }
         });
       }
@@ -192,19 +195,25 @@
     App.prototype.renderMessages = function() {
       var list, that, theTemplate, theTemplateScript;
       that = this;
-      list = $('.message-list');
-      theTemplateScript = $('#message-list-template').html();
+      list = document.querySelector('.message-list');
+      theTemplateScript = document.querySelector('#message-list-template').innerHTML;
       theTemplate = Handlebars.compile(theTemplateScript);
       this.dataSource.getMessages(function(msgs) {
+        var i, messageCards;
         document.querySelector('#progress').style.display = 'none';
         that.msgs = msgs;
-        list.append(theTemplate(msgs));
-        list.find('message-card').on('click', function(e) {
-          var msgId;
-          e.preventDefault();
-          msgId = $(this).data('index');
-          window.location.hash = 'message/' + msgId;
-        });
+        list.innerHTML = theTemplate(msgs);
+        messageCards = list.querySelectorAll('message-card');
+        i = 0;
+        while (i < messageCards.length) {
+          messageCards[i].addEventListener('click', function(e) {
+            var msgId;
+            e.preventDefault();
+            msgId = this.getAttribute('data-index');
+            return window.location.hash = 'message/' + msgId;
+          });
+          i++;
+        }
       });
     };
 

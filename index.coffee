@@ -116,14 +116,19 @@ class App
     @dataSource.addMessageListener (doc) ->
       console.log 'a message was added:', doc.message
       that.msgs.push doc
-      list = $('.message-list')
-      list.prepend "<message-card data-index="+doc.id+" timestamp="+doc.timestamp+"><h1>"+doc.message+"</h1></message-card>"
-      li = list.find '[data-index='+doc.id+']'
-      li.on 'click', (e) ->
+      listNode = document.querySelector('.message-list')
+      msgsNodes = document.querySelectorAll('.message-list message-card')
+      firstNode = msgsNodes[0]
+      newMsgEl = document.createElement('message-card')
+      newMsgEl.setAttribute("data-index", doc.id)
+      newMsgEl.setAttribute("timestamp", doc.timestamp)
+      newMsgEl.innerHTML = "<h1>"+doc.message+"</h1>"
+
+      newEl = listNode.insertBefore(newMsgEl,firstNode)
+      newEl.addEventListener 'click', (e) ->
         e.preventDefault()
-        msgId = $(this).data('index')
+        msgId = this.getAttribute('data-index')
         window.location.hash = 'message/' + msgId
-        return
       return
 
   onHashChange: (event) =>
@@ -137,33 +142,37 @@ class App
     console.log 'submit', event
 
   renderSingleMessage: (msgid) ->
-    detail = $('.detail')
-    popup = detail.children('core-overlay')
+    detail = document.querySelector('.detail')
+    popup = detail.querySelector('core-overlay')
     if @msgs.length
       @msgs.forEach (msg) ->
         if msg.id == msgid
-          popup.children('h2').text msg.message
-          popup.css({'background-color': 'white', 'padding':'20px'})
-          popup[0].open()
+          popup.querySelector('h2').innerText = msg.message
+          popup.style.backgroundColor='white'
+          popup.style.padding='20px'
+          popup.open()
         return
     return
 
   renderMessages: () ->
     that = this
-    list = $('.message-list')
-    theTemplateScript = $('#message-list-template').html()
+    list = document.querySelector('.message-list')
+    theTemplateScript = document.querySelector('#message-list-template').innerHTML
     #Compile the template​
     theTemplate = Handlebars.compile(theTemplateScript)
 
     @dataSource.getMessages (msgs) ->
       document.querySelector('#progress').style.display = 'none'
       that.msgs = msgs
-      list.append theTemplate(msgs)
-      list.find('message-card').on 'click', (e) ->
-        e.preventDefault()
-        msgId = $(this).data('index')
-        window.location.hash = 'message/' + msgId
-        return
+      list.innerHTML = theTemplate(msgs)
+      messageCards = list.querySelectorAll('message-card')
+      i = 0
+      while i < messageCards.length
+        messageCards[i].addEventListener 'click', (e) ->
+          e.preventDefault()
+          msgId = this.getAttribute('data-index')
+          window.location.hash = 'message/' + msgId
+        i++
       return
     return
 
