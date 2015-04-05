@@ -179,12 +179,15 @@
           var popup;
           if (msg.id === msgid) {
             popup = document.querySelector('core-overlay');
-            popup.querySelector('h2').innerText = msg.message;
             popup.style.backgroundColor = 'white';
             popup.style.padding = '20px';
+            popup.querySelector('h2').innerText = msg.message;
             popup.open();
           }
         });
+      } else {
+        console.log('No message found');
+        window.location.hash = '';
       }
     };
 

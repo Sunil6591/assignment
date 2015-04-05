@@ -170,12 +170,15 @@ class App
         if msg.id == msgid
           #3
           popup = document.querySelector('core-overlay')
-          popup.querySelector('h2').innerText = msg.message
           popup.style.backgroundColor='white'
           popup.style.padding='20px'
+          popup.querySelector('h2').innerText = msg.message
           #4
           popup.open()
         return
+    else
+      console.log 'No message found'
+      window.location.hash = ''
     return
 
   #This method renders all the messages in list
