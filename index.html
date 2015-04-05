@@ -13,36 +13,45 @@
   <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
   <link rel="import" href="bower_components/core-transition/core-transition-css.html">
   <link rel="import" href="bower_components/core-overlay/core-overlay.html">
+  <link rel="import" href="bower_components/paper-progress/paper-progress.html">
+  <link rel="import" href="bower_components/paper-input/paper-autogrow-textarea.html" >
+  <link rel="import" href="bower_components/paper-input/paper-input-decorator.html" >
   <link rel="import" href="components/message-card.html">
 </head>
 <body  fullbleed layout vertical>
 
 <core-header-panel>
-  <core-toolbar>Assignment</core-toolbar>
-  <div>
-    <div class="list">
-      <div class="messages" fullbleed horizontal layout wrap center-justified >
-        <ul class="message-list">
-          <script id="message-list-template" type="x-handlebars-template">​
-          {{#each this}}
-            <message-card data-index="{{id}}" timestamp="{{timestamp}}">
-              <h1>{{message}}</h1>
-            </message-card>
-          {{/each}}
-          </script> 
-        </ul>
-      </div>
+  <core-toolbar>
+    <div class="title">Assignment</div>
+    <div class="new">
       <form name="frmNewMessage">
         <input name="message">
         <input type="submit" value="Save">
       </form>
     </div>
+  </core-toolbar>
+  <div id="progress">
+    <paper-progress indeterminate=""></paper-progress>
+  </div>
+  <div >
+
+    <section fullbleed horizontal layout  flex wrap center-justified >
+      <ul class="message-list">
+        <script id="message-list-template" type="x-handlebars-template">​
+        {{#each this}}
+        <li>
+          <message-card data-index="{{id}}" timestamp="{{timestamp}}">
+            <h1>{{message}}</h1>
+          </message-card>
+        </li>
+        {{/each}}
+        </script> 
+      </ul>
+    </section>
 
     <div class="detail">
-      <core-overlay class="popup" layered backdrop>
-        <h2>Dialog</h2>
-        <input placeholder="say something..." autofocus>
-        <div>I agree with this wholeheartedly.</div>
+      <core-overlay popup layered backdrop >
+        <h2></h2>
         <button core-overlay-toggle>OK</button>
       </core-overlay>
     </div>

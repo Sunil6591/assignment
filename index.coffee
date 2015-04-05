@@ -25,7 +25,7 @@ class DataSource
   _randomlyPostMessages: ->
     postMessage = =>
       if Math.random() < .3 then @postMessage @_getRandomMessage()
-    setInterval postMessage, 1000
+    setInterval postMessage, 5000
 
   # A method that fakes getting messages from a server, and calling a callback
   # when it's ready. Use like:
@@ -88,7 +88,7 @@ class DataSource
       @_messageDocs[key] = messageDoc
       cb?()
       @_messageListeners.forEach (listener) -> listener messageDoc
-    setTimeout onReady, 5000
+    setTimeout onReady, 500
 
   # The callback argument is called whenever a message is added. Use like:
   #
@@ -117,7 +117,7 @@ class App
       console.log 'a message was added:', doc.message
       that.msgs.push doc
       list = $('.message-list')
-      list.append "<message-card data-index="+doc.id+" timestamp="+doc.timestamp+"><h1>"+doc.message+"</h1></message-card>"
+      list.prepend "<message-card data-index="+doc.id+" timestamp="+doc.timestamp+"><h1>"+doc.message+"</h1></message-card>"
       li = list.find '[data-index='+doc.id+']'
       li.on 'click', (e) ->
         e.preventDefault()
@@ -138,11 +138,12 @@ class App
 
   renderSingleMessage: (msgid) ->
     detail = $('.detail')
-    popup = detail.children('.popup')
+    popup = detail.children('core-overlay')
     if @msgs.length
       @msgs.forEach (msg) ->
         if msg.id == msgid
-          popup.children('.popup div').text msg.message
+          popup.children('h2').text msg.message
+          popup.css({'background-color': 'white', 'padding':'20px'})
           popup[0].open()
         return
     return
@@ -155,6 +156,7 @@ class App
     theTemplate = Handlebars.compile(theTemplateScript)
 
     @dataSource.getMessages (msgs) ->
+      document.querySelector('#progress').style.display = 'none'
       that.msgs = msgs
       list.append theTemplate(msgs)
       list.find('message-card').on 'click', (e) ->
@@ -184,3 +186,6 @@ class App
 window.addEventListener 'DOMContentLoaded', (event) ->
   app = new App()
   app.router(window.location.hash)
+
+onCloseOverlay= () ->
+  console.log 'overlay closed'
