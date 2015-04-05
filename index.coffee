@@ -113,9 +113,17 @@ class App
     window.addEventListener 'hashchange', @onHashChange
     document.querySelector('form').addEventListener 'submit', @onSubmitForm
     that=this
+    # This method does
+    #   1. listens to new message
+    #   2. Add the new message to array
+    #   3. Prepend the new message in DOM
+    #   4. Attach the click lister to new message
     @dataSource.addMessageListener (doc) ->
+      #1
       console.log 'a message was added:', doc.message
+      #2
       that.msgs.push doc
+      #3
       listNode = document.querySelector('.message-list')
       msgsNodes = document.querySelectorAll('.message-list message-card')
       firstNode = msgsNodes[0]
@@ -123,49 +131,79 @@ class App
       newMsgEl.setAttribute("data-index", doc.id)
       newMsgEl.setAttribute("timestamp", doc.timestamp)
       newMsgEl.innerHTML = "<h1>"+doc.message+"</h1>"
-
       newEl = listNode.insertBefore(newMsgEl,firstNode)
+      #4
       newEl.addEventListener 'click', (e) ->
         e.preventDefault()
         msgId = this.getAttribute('data-index')
         window.location.hash = 'message/' + msgId
       return
 
+  # This method does
+  # 1. Listens to hash change in location
+  # 2. Calls the router to route the request
   onHashChange: (event) =>
     console.log 'hashchange', event
     @router(window.location.hash)
 
+  #This method deos
+  # 1. Handles the submit
+  # 2. Get the new message text
+  # 3. Calls the datasource post message api
   onSubmitForm: (event) =>
+    #1
     event.preventDefault()
+    #2
     msg = document.frmNewMessage[0].value
+    #3
     @dataSource.postMessage msg
     console.log 'submit', event
 
+  # This method Renders the single message in popup
+  # 1. Gets the message id
+  # 2. Search the message in array
+  # 3. If found then set the message in overlay popup
+  # 4. And open the popup
+  # TODO - Apply the styling from CSS
   renderSingleMessage: (msgid) ->
-    detail = document.querySelector('.detail')
-    popup = detail.querySelector('core-overlay')
+    #1
     if @msgs.length
+      #2
       @msgs.forEach (msg) ->
         if msg.id == msgid
+          #3
+          popup = document.querySelector('core-overlay')
           popup.querySelector('h2').innerText = msg.message
           popup.style.backgroundColor='white'
           popup.style.padding='20px'
+          #4
           popup.open()
         return
     return
 
+  #This method renders all the messages in list
+  # 1.  Get the template
+  # 2.  Compile the template
+  # 3.  Get the messages from datasource api
+  # 4.  Set the progress bar to hidden
+  # 5.  Pass the messages to template to generate actual html
+  # 6.  Attach onclick handler to all the messages
   renderMessages: () ->
     that = this
     list = document.querySelector('.message-list')
+    #1
     theTemplateScript = document.querySelector('#message-list-template').innerHTML
-    #Compile the template​
+    #2
     theTemplate = Handlebars.compile(theTemplateScript)
-
+    #3
     @dataSource.getMessages (msgs) ->
+      #4
       document.querySelector('#progress').style.display = 'none'
       that.msgs = msgs
+      #5
       list.innerHTML = theTemplate(msgs)
       messageCards = list.querySelectorAll('message-card')
+      #6
       i = 0
       while i < messageCards.length
         messageCards[i].addEventListener 'click', (e) ->
@@ -176,9 +214,15 @@ class App
       return
     return
 
+  # This method routes the request
+  # 1. Gets the hash value
+  # 2. Has a switch case
+  # 3. Call the right function as per the hash.
   router: (url) ->
+    #1
     temp = url.split('/')[0]
     that = this
+    #2
     map =
       '': ->
         that.renderMessages()
@@ -187,7 +231,7 @@ class App
         that.renderSingleMessage id
         return
 
-
+    #4
     if map[temp]
       map[temp]()
 
@@ -196,5 +240,3 @@ window.addEventListener 'DOMContentLoaded', (event) ->
   app = new App()
   app.router(window.location.hash)
 
-onCloseOverlay= () ->
-  console.log 'overlay closed'
