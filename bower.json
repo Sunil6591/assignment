@@ -1,0 +1,24 @@
+{
+  "name": "assignment",
+  "main": "index.js",
+  "version": "0.0.0",
+  "authors": [
+    "sunil p joshi"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5",
+    "core-header-panel": "Polymer/core-header-panel#~0.5.5",
+    "core-toolbar": "Polymer/core-toolbar#~0.5.5",
+    "paper-ripple": "Polymer/paper-ripple#~0.5.5",
+    "paper-shadow": "Polymer/paper-shadow#~0.5.5",
+    "core-overlay": "Polymer/core-overlay#~0.5.5"
+  }
+}

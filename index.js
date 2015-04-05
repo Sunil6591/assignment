@@ -147,7 +147,7 @@
         console.log('a message was added:', doc.message);
         that.msgs.push(doc);
         list = $('.message-list');
-        list.append("<li data-index=" + doc.id + "><h2><a href='#'>" + doc.timestamp + "</a></h2><p>" + doc.message + "</p>");
+        list.append("<message-card data-index=" + doc.id + " timestamp=" + doc.timestamp + "><h1>" + doc.message + "</h1></message-card>");
         li = list.find('[data-index=' + doc.id + ']');
         li.on('click', function(e) {
           var msgId;
@@ -172,12 +172,14 @@
     };
 
     App.prototype.renderSingleMessage = function(msgid) {
-      var detail;
+      var detail, popup;
       detail = $('.detail');
+      popup = detail.children('.popup');
       if (this.msgs.length) {
         this.msgs.forEach(function(msg) {
           if (msg.id === msgid) {
-            detail.find('h1').text(msg.message);
+            popup.children('.popup div').text(msg.message);
+            popup[0].open();
           }
         });
       }
@@ -192,7 +194,7 @@
       this.dataSource.getMessages(function(msgs) {
         that.msgs = msgs;
         list.append(theTemplate(msgs));
-        list.find('li').on('click', function(e) {
+        list.find('message-card').on('click', function(e) {
           var msgId;
           e.preventDefault();
           msgId = $(this).data('index');

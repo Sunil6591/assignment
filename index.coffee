@@ -117,7 +117,7 @@ class App
       console.log 'a message was added:', doc.message
       that.msgs.push doc
       list = $('.message-list')
-      list.append "<li data-index="+doc.id+"><h2><a href='#'>"+doc.timestamp+"</a></h2><p>"+doc.message+"</p>"
+      list.append "<message-card data-index="+doc.id+" timestamp="+doc.timestamp+"><h1>"+doc.message+"</h1></message-card>"
       li = list.find '[data-index='+doc.id+']'
       li.on 'click', (e) ->
         e.preventDefault()
@@ -138,10 +138,12 @@ class App
 
   renderSingleMessage: (msgid) ->
     detail = $('.detail')
+    popup = detail.children('.popup')
     if @msgs.length
       @msgs.forEach (msg) ->
         if msg.id == msgid
-          detail.find('h1').text msg.message
+          popup.children('.popup div').text msg.message
+          popup[0].open()
         return
     return
 
@@ -155,7 +157,7 @@ class App
     @dataSource.getMessages (msgs) ->
       that.msgs = msgs
       list.append theTemplate(msgs)
-      list.find('li').on 'click', (e) ->
+      list.find('message-card').on 'click', (e) ->
         e.preventDefault()
         msgId = $(this).data('index')
         window.location.hash = 'message/' + msgId

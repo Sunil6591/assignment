@@ -1,0 +1,77 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+<link rel="import" href="../bower_components/paper-shadow/paper-shadow.html">
+
+<polymer-element name="message-card" attributes="timestamp">
+    <template>
+        <style>
+            :host {
+                display: block;
+                position: relative;
+                background-color: white;
+                padding: 5px;
+                width: 100%;
+                font-size: 1.2rem;
+                font-weight: 300;
+            }
+            .card-header {
+                padding: 20px;
+                margin-bottom: 0px;
+                background-color: #EEEEEE;
+            }
+            .timestamp {
+                position: absolute;
+                font-size: 0.5em;
+                color: gray;
+                bottom: 3px;
+                right: 10px;
+            }
+            polyfill-next-selector { content: '.card-header h1'; }
+            .card-header ::content h1 {
+                margin: 0;
+                font-size: 0.85rem;
+                font-weight: 300;
+            }
+            polyfill-next-selector { content: '.card-header h2'; }
+            .card-header ::content h2 {
+                margin: 0;
+                line-height: 25px;
+                font-size: 1.5rem;
+                font-weight: 300;
+            }
+            .close-change{
+                /*width:250px;*/
+                margin-right: 10%;
+            }
+            paper-ripple{
+                color:#2196F3;
+                cursor: pointer;
+            }
+            @media (min-width: 650px) {
+                .card-header ::content h2 {
+                    font-size: 1.8rem;
+                }
+            }
+        </style>
+        <paper-shadow>
+            <div class="card-header" layout horizontal center>
+                <paper-ripple fit></paper-ripple>
+                <div flex>
+                    <p>
+                        <content select="h1"></content>
+                    </p>
+                    <content select="h2"></content>
+                </div>
+                <div class="timestamp">{{timestamp}}</div>
+            </div>
+        </paper-shadow>
+    </template>
+    <script>
+        Polymer({
+            timestampChanged: function(e) {
+                console.log('timestamp');
+            }
+        });
+    </script>
+</polymer-element>

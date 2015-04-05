@@ -1,0 +1,32 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+core-header-panel {
+    height: 100%;
+}
+.card {
+    background-color: #EEEEEE;
+    margin: 10px;
+    cursor: pointer;
+}
+.list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.list > *:first-child {
+    border: 1px solid silver;
+    flex-grow: 1;
+}
+.list input {
+    width: 100%;
+}
+.popup {
+    height: 200px;
+    width: 300px;
+    border: 1px solid black;
+    padding: 10px;
+}
+
+
