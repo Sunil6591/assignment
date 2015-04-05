@@ -7,8 +7,10 @@
   <meta name="viewport" content="width=device-width">
   <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
   <script src="index.js" type="text/javascript" charset="utf-8"></script>
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">-->
+  <link rel="stylesheet" href="styles/theme.css" shim-shadowdom>
+  <link rel="stylesheet" href="styles/styles.css" shim-shadowdom>
 
-  <link rel="stylesheet" href="styles.css" shim-shadowdom>
   <link rel="import" href="bower_components/core-header-panel/core-header-panel.html">
   <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
   <link rel="import" href="bower_components/core-transition/core-transition-css.html">
@@ -16,6 +18,8 @@
   <link rel="import" href="bower_components/paper-progress/paper-progress.html">
   <link rel="import" href="bower_components/paper-input/paper-autogrow-textarea.html" >
   <link rel="import" href="bower_components/paper-input/paper-input-decorator.html" >
+  <link rel="import" href="bower_components/paper-input/paper-input.html" >
+  <link rel="import" href="bower_components/paper-button/paper-button.html" >
   <link rel="import" href="components/message-card.html">
 </head>
 <body  fullbleed layout vertical>
@@ -25,8 +29,16 @@
     <div class="title">Assignment</div>
     <div class="new">
       <form name="frmNewMessage">
-        <input name="message">
-        <input type="submit" value="Save">
+        <div class="form">
+          <div class="input-message">
+            <paper-input-decorator label="Your message ..." floatingLabel>
+              <input id="newMessage" is="core-input">
+            </paper-input-decorator>
+          </div>
+          <div class="input-button">
+            <paper-button raised secondary><button>Add</button></paper-button>
+          </div>
+        </div>
       </form>
     </div>
   </core-toolbar>

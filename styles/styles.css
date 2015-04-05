@@ -1,0 +1,55 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+core-header-panel {
+    height: 100%;
+}
+
+paper-progress {
+    width: 100%;
+    top: 64px;
+    position: fixed;
+    left: 0;
+}
+.title {
+    flex: 1
+}
+#progress {
+    display: block;
+}
+section {
+    margin: 2em;
+}
+.form {
+    display: flex;
+}
+.input-message {
+    position: absolute;
+    top: -12px;
+    right: 150px;
+
+}
+.input-button {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+}
+
+paper-button {
+    padding:0;
+}
+paper-button::shadow .button-content {
+    padding:0;
+}
+paper-button button {
+    padding:1em;
+    background-color: transparent;
+    border-color: transparent;
+}
+paper-button button::-moz-focus-inner {
+    border: 0;
+}
+
+

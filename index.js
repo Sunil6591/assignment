@@ -154,12 +154,6 @@
         newMsgEl.setAttribute("timestamp", doc.timestamp);
         newMsgEl.innerHTML = "<h1>" + doc.message + "</h1>";
         newEl = listNode.insertBefore(newMsgEl, firstNode);
-        newEl.addEventListener('click', function(e) {
-          var msgId;
-          e.preventDefault();
-          msgId = this.getAttribute('data-index');
-          return window.location.hash = 'message/' + msgId;
-        });
       });
     }
 
@@ -169,10 +163,13 @@
     };
 
     App.prototype.onSubmitForm = function(event) {
-      var msg;
+      var frm, msg;
       event.preventDefault();
-      msg = document.frmNewMessage[0].value;
-      this.dataSource.postMessage(msg);
+      frm = document.querySelector('form');
+      msg = frm.querySelector('#newMessage').value;
+      if (msg) {
+        this.dataSource.postMessage(msg);
+      }
       return console.log('submit', event);
     };
 
@@ -198,21 +195,19 @@
       theTemplateScript = document.querySelector('#message-list-template').innerHTML;
       theTemplate = Handlebars.compile(theTemplateScript);
       this.dataSource.getMessages(function(msgs) {
-        var i, messageCards;
+        var messageCards;
         document.querySelector('#progress').style.display = 'none';
         that.msgs = msgs;
         list.innerHTML = theTemplate(msgs);
         messageCards = list.querySelectorAll('message-card');
-        i = 0;
-        while (i < messageCards.length) {
-          messageCards[i].addEventListener('click', function(e) {
-            var msgId;
-            e.preventDefault();
-            msgId = this.getAttribute('data-index');
+        list.addEventListener('click', function(e) {
+          var msgId;
+          e.preventDefault();
+          msgId = e.target.getAttribute('data-index');
+          if (msgId) {
             return window.location.hash = 'message/' + msgId;
-          });
-          i++;
-        }
+          }
+        });
       });
     };
 

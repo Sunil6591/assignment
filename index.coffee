@@ -117,7 +117,7 @@ class App
     #   1. listens to new message
     #   2. Add the new message to array
     #   3. Prepend the new message in DOM
-    #   4. Attach the click lister to new message
+
     @dataSource.addMessageListener (doc) ->
       #1
       console.log 'a message was added:', doc.message
@@ -132,11 +132,6 @@ class App
       newMsgEl.setAttribute("timestamp", doc.timestamp)
       newMsgEl.innerHTML = "<h1>"+doc.message+"</h1>"
       newEl = listNode.insertBefore(newMsgEl,firstNode)
-      #4
-      newEl.addEventListener 'click', (e) ->
-        e.preventDefault()
-        msgId = this.getAttribute('data-index')
-        window.location.hash = 'message/' + msgId
       return
 
   # This method does
@@ -154,9 +149,11 @@ class App
     #1
     event.preventDefault()
     #2
-    msg = document.frmNewMessage[0].value
+    frm = document.querySelector('form')
+    msg = frm.querySelector('#newMessage').value
     #3
-    @dataSource.postMessage msg
+    if msg
+      @dataSource.postMessage msg
     console.log 'submit', event
 
   # This method Renders the single message in popup
@@ -187,7 +184,7 @@ class App
   # 3.  Get the messages from datasource api
   # 4.  Set the progress bar to hidden
   # 5.  Pass the messages to template to generate actual html
-  # 6.  Attach onclick handler to all the messages
+  # 6.  Attach onclick handler to parent list element and get the msg id from target
   renderMessages: () ->
     that = this
     list = document.querySelector('.message-list')
@@ -204,13 +201,11 @@ class App
       list.innerHTML = theTemplate(msgs)
       messageCards = list.querySelectorAll('message-card')
       #6
-      i = 0
-      while i < messageCards.length
-        messageCards[i].addEventListener 'click', (e) ->
-          e.preventDefault()
-          msgId = this.getAttribute('data-index')
+      list.addEventListener 'click', (e) ->
+        e.preventDefault()
+        msgId = e.target.getAttribute('data-index')
+        if msgId
           window.location.hash = 'message/' + msgId
-        i++
       return
     return
 
