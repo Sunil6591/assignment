@@ -112,6 +112,7 @@ class App
     @msgs = []
     window.addEventListener 'hashchange', @onHashChange
     document.querySelector('form').addEventListener 'submit', @onSubmitForm
+    theDailog.addEventListener 'core-overlay-close-completed', @onDialogClose
     that=this
     # This method does
     #   1. listens to new message
@@ -119,11 +120,8 @@ class App
     #   3. Prepend the new message in DOM
 
     @dataSource.addMessageListener (doc) ->
-      #1
       console.log 'a message was added:', doc.message
-      #2
       that.msgs.push doc
-      #3
       listNode = document.querySelector('.message-list')
       msgsNodes = document.querySelectorAll('.message-list message-card')
       firstNode = msgsNodes[0]
@@ -134,12 +132,20 @@ class App
       newEl = listNode.insertBefore(newMsgEl,firstNode)
       return
 
+
+  onDialogClose: (event) =>
+    console.log 'closed'
+    window.location.hash = '#'
+
   # This method does
   # 1. Listens to hash change in location
   # 2. Calls the router to route the request
   onHashChange: (event) =>
     console.log 'hashchange', event
     @router(window.location.hash)
+
+  escapeHtml = (unsafe) ->
+    unsafe.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace /'/g, '&#039;'
 
   #This method deos
   # 1. Handles the submit
@@ -151,9 +157,10 @@ class App
     #2
     frm = document.querySelector('form')
     msg = frm.querySelector('#newMessage').value
+    frm.querySelector('#newMessage').value = ''
     #3
     if msg
-      @dataSource.postMessage msg
+      @dataSource.postMessage escapeHtml(msg)
     console.log 'submit', event
 
   # This method Renders the single message in popup
@@ -164,22 +171,25 @@ class App
   # TODO - Apply the styling from CSS
   renderSingleMessage: (msgid) ->
     #1
-    if @msgs.length
-      #2
-      @msgs.forEach (msg) ->
-        if msg.id == msgid
-          #3
-          popup = document.querySelector('core-overlay')
-          popup.style.backgroundColor='white'
-          popup.style.padding='20px'
-          popup.querySelector('h2').innerText = msg.message
-          #4
-          popup.open()
-        return
-    else
-      console.log 'No message found'
-      window.location.hash = ''
-    return
+    foundMsg = false
+    i = 0
+    while i < this.msgs.length
+      if this.msgs[i].id == msgid
+        theDailog.style.backgroundColor='white'
+        theDailog.style.padding='20px'
+        theDailog.querySelector('h2').innerHTML = this.msgs[i].message
+        theDailog.open()
+        foundMsg = true
+        break
+      i++
+    if !foundMsg
+      console.log 'Message not found'
+      window.location.hash = '#'
+      return
+
+  getTemplate: () ->
+    theTemplateScript = document.querySelector('#message-list-template').innerHTML
+    theTemplate = Handlebars.compile(theTemplateScript)
 
   #This method renders all the messages in list
   # 1.  Get the template
@@ -188,28 +198,24 @@ class App
   # 4.  Set the progress bar to hidden
   # 5.  Pass the messages to template to generate actual html
   # 6.  Attach onclick handler to parent list element and get the msg id from target
+  theTemplate = null
+
   renderMessages: () ->
+
     that = this
     list = document.querySelector('.message-list')
-    #1
-    theTemplateScript = document.querySelector('#message-list-template').innerHTML
-    #2
-    theTemplate = Handlebars.compile(theTemplateScript)
-    #3
+
+    if (!theTemplate)
+      theTemplate = @getTemplate()
     @dataSource.getMessages (msgs) ->
-      #4
       document.querySelector('#progress').style.display = 'none'
       that.msgs = msgs
-      #5
       list.innerHTML = theTemplate(msgs)
-      messageCards = list.querySelectorAll('message-card')
-      #6
       list.addEventListener 'click', (e) ->
         e.preventDefault()
         msgId = e.target.getAttribute('data-index')
         if msgId
-          window.location.hash = 'message/' + msgId
-      return
+          window.location.hash = '#message/'+msgId
     return
 
   # This method routes the request
@@ -218,11 +224,13 @@ class App
   # 3. Call the right function as per the hash.
   router: (url) ->
     #1
-    temp = url.split('/')[0]
+    hash = url.split('/')[0]
     that = this
     #2
     map =
       '': ->
+        if theDailog.opened
+          theDailog.close()
         that.renderMessages()
       '#message': ->
         id = url.split('#message/')[1].trim()
@@ -230,11 +238,12 @@ class App
         return
 
     #4
-    if map[temp]
-      map[temp]()
+    if map[hash]
+      map[hash]()
 
-
+theDailog = null
 window.addEventListener 'DOMContentLoaded', (event) ->
+  theDailog = document.querySelector('core-overlay')
   app = new App()
   app.router(window.location.hash)
 
