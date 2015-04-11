@@ -31,8 +31,8 @@
       <form name="frmNewMessage">
         <div class="form">
           <div class="input-message">
-            <paper-input-decorator label="Your message ..." floatingLabel>
-              <input id="newMessage" is="core-input">
+            <paper-input-decorator id="paperNewMsg" label="Your message ..." floatingLabel>
+              <input id="newMessage" is="core-input" onfocus="this.parentElement.labelVisible=false">
             </paper-input-decorator>
           </div>
           <div class="input-button">
